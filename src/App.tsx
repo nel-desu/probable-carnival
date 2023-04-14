@@ -7,14 +7,14 @@ import './App.css';
 function App() {
 
   // 三角形的高
-  const SCALE = 100;
+  const SCALE = 120;
 
   // 图形填充的颜色（Path 下使用）
-  const FILL_COLOR = 'rgb(220, 210, 180)';
+  const FILL_COLOR = 'rgb(205, 200, 170)';
   // 图形边框颜色
-  const BORDER_COLOR = 'rgba(220, 210, 180, 0.8)';
+  const BORDER_COLOR = 'rgba(205, 200, 170, 0.8)';
   // 线条颜色
-  const LINE_COLOR = 'rgba(205, 205, 190, 0.9)';
+  const LINE_COLOR = 'rgba(205, 200, 180, 0.9)';
 
   const canvasEl = useRef<HTMLCanvasElement>(null);
 
@@ -59,7 +59,7 @@ function App() {
         showLines(canvas, () => {
           trianglesFadeIn(canvas, triangles.flat(), true);
         });
-      }, 1);
+      }, 1000);
 
       canvas.renderAll();
     };
@@ -83,6 +83,7 @@ function App() {
   }, []);
 
   function showLines(canvas: Canvas, onComplete: () => void) {
+    const lines: Object[] = [];
     const objOption = { stroke: LINE_COLOR, };
 
     // 上面的线从左到右
@@ -98,18 +99,25 @@ function App() {
     const rightBottomToTopCenter = new fabric.Line([canvasWidth, canvasHeight, canvasWidth, canvasHeight], objOption);
     const leftBottomToTopCenter = new fabric.Line([0, canvasHeight, 0, canvasHeight], objOption);
 
-    canvas.add(topLine);
-    canvas.add(BottomLine);
-    canvas.add(toRightBottomA);
-    canvas.add(toRightBottomB);
-    canvas.add(toLeftBottomA);
-    canvas.add(toLeftBottomB);
-    canvas.add(rightBottomToTopCenter);
-    canvas.add(leftBottomToTopCenter);
+    lines.push(topLine);
+    lines.push(BottomLine);
+    lines.push(toRightBottomA);
+    lines.push(toRightBottomB);
+    lines.push(toLeftBottomA);
+    lines.push(toLeftBottomB);
+    lines.push(rightBottomToTopCenter);
+    lines.push(leftBottomToTopCenter);
+    
+    lines.forEach(e => {
+      canvas.add(e);
+      e.sendToBack();
+    });
 
+    // 8 22 8 23 36 11 25 15
     const animOption = {
       onChange: canvas.renderAll.bind(canvas),
-      duration: 200,
+      duration: 250,
+      easing: fabric.util.ease.easeOutCubic,
     };
     topLine.animate({
       x2: canvasWidth,
@@ -145,6 +153,7 @@ function App() {
     }, {
       onChange: animOption.onChange,
       duration: animOption.duration,
+      easing: animOption.easing,
       onComplete: onComplete,
     });
   }
@@ -158,7 +167,7 @@ function App() {
 
   function trianglesFadeIn(canvas: Canvas, triangles: Object[], show: boolean) {
     setTimeout(() => {
-      for (let i = 0; i < 40; i++) {
+      for (let i = 0; i < 30; i++) {
         const triangle = removeRandomElement(triangles);
         if (triangle != null) {
           triangle.set({ opacity: show ? 1 : 0 });
@@ -167,7 +176,7 @@ function App() {
       }
       canvas.renderAll();
       trianglesFadeIn(canvas, triangles, show);
-    }, 50);
+    }, 40);
   }
 
   // 从数组中随机删除一个元素，并返回此元素
@@ -224,7 +233,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* <img id='my-image' style={{ display: 'none' }} src={png} width={SCALE} /> */}
+      <img id='my-image' style={{ display: 'none' }} src={png} width={SCALE} />
       <canvas id='canvas'
         width={canvasWidth}
         height={canvasHeight}
