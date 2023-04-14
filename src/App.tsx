@@ -14,7 +14,7 @@ function App() {
   // 图形边框颜色
   const BORDER_COLOR = 'rgba(220, 210, 180, 0.8)';
   // 线条颜色
-  const LINE_COLOR = 'rgba(220, 210, 180, 0.8)';
+  const LINE_COLOR = 'rgba(205, 205, 190, 0.9)';
 
   const canvasEl = useRef<HTMLCanvasElement>(null);
 
@@ -57,7 +57,7 @@ function App() {
 
       setTimeout(() => {
         showLines(canvas, () => {
-          // trianglesFadeIn(canvas, triangles.flat(), true);
+          trianglesFadeIn(canvas, triangles.flat(), true);
         });
       }, 1);
 
@@ -94,8 +94,9 @@ function App() {
     const toRightBottomB = new fabric.Line([SCALE * 2, 0, SCALE * 2, 0], objOption);
     const toLeftBottomA = new fabric.Line([canvasWidth, 0, canvasWidth, 0], objOption);
     const toLeftBottomB = new fabric.Line([canvasWidth - SCALE * 2, 0, canvasWidth - SCALE * 2, 0], objOption);
-    const topCenterToRight = new fabric.Line([canvasWidth / 2 - SCALE, 0, canvasWidth / 2 - SCALE, 0], objOption);
-    const topCenterToLeft = new fabric.Line([canvasWidth / 2 + SCALE, 0, canvasWidth / 2 + SCALE, 0], objOption);
+    // 这两条线是从底部到顶部
+    const rightBottomToTopCenter = new fabric.Line([canvasWidth, canvasHeight, canvasWidth, canvasHeight], objOption);
+    const leftBottomToTopCenter = new fabric.Line([0, canvasHeight, 0, canvasHeight], objOption);
 
     canvas.add(topLine);
     canvas.add(BottomLine);
@@ -103,12 +104,12 @@ function App() {
     canvas.add(toRightBottomB);
     canvas.add(toLeftBottomA);
     canvas.add(toLeftBottomB);
-    canvas.add(topCenterToRight);
-    canvas.add(topCenterToLeft);
+    canvas.add(rightBottomToTopCenter);
+    canvas.add(leftBottomToTopCenter);
 
     const animOption = {
       onChange: canvas.renderAll.bind(canvas),
-      duration: 150,
+      duration: 200,
     };
     topLine.animate({
       x2: canvasWidth,
@@ -134,13 +135,13 @@ function App() {
       x2: canvasWidth / 2 - SCALE * 3,
       y2: canvasHeight,
     }, animOption);
-    topCenterToRight.animate({
-      x2: canvasWidth,
-      y2: canvasHeight,
+    rightBottomToTopCenter.animate({
+      x2: canvasWidth / 2 - SCALE,
+      y2: 0,
     }, animOption);
-    topCenterToLeft.animate({
-      x2: 0,
-      y2: canvasHeight,
+    leftBottomToTopCenter.animate({
+      x2: canvasWidth / 2 + SCALE,
+      y2: 0,
     }, {
       onChange: animOption.onChange,
       duration: animOption.duration,
@@ -223,7 +224,7 @@ function App() {
 
   return (
     <div className="App">
-      <img id='my-image' style={{ display: 'none' }} src={png} width={SCALE} />
+      {/* <img id='my-image' style={{ display: 'none' }} src={png} width={SCALE} /> */}
       <canvas id='canvas'
         width={canvasWidth}
         height={canvasHeight}
